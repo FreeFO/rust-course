@@ -176,7 +176,7 @@ Rust 在语言级别，只有一种字符串类型： `str`，它通常是以引
 
 `str` 类型是硬编码进可执行文件，也无法被修改，但是 `String` 则是一个可增长、可改变且具有所有权的 UTF-8 编码字符串，**当 Rust 用户提到字符串时，往往指的就是 `String` 类型和 `&str` 字符串切片类型，这两个类型都是 UTF-8 编码**。
 
-除了 `String` 类型的字符串，Rust 的标准库还提供了其他类型的字符串，例如 `OsString`， `OsStr`， `CsString` 和` CsStr` 等，注意到这些名字都以 `String` 或者 `Str` 结尾了吗？它们分别对应的是具有所有权和被借用的变量。
+除了 `String` 类型的字符串，Rust 的标准库还提供了其他类型的字符串，例如 `OsString`， `OsStr`， `CsString` 和 `CsStr` 等，注意到这些名字都以 `String` 或者 `Str` 结尾了吗？它们分别对应的是具有所有权和被借用的变量。
 
 ## String 与 &str 的转换
 
@@ -394,7 +394,7 @@ string_replace_range = "I like Rust!"
 
 #### 删除 (Delete)
 
-与字符串删除相关的方法有 4 个，他们分别是 `pop()`，`remove()`，`truncate()`，`clear()`。这四个方法仅适用于 `String` 类型。
+与字符串删除相关的方法有 4 个，它们分别是 `pop()`，`remove()`，`truncate()`，`clear()`。这四个方法仅适用于 `String` 类型。
 
 1、 `pop` —— 删除并返回字符串的最后一个字符
 
@@ -498,7 +498,7 @@ string_clear = ""
 
 1、使用 `+` 或者 `+=` 连接字符串
 
-使用 `+` 或者 `+=` 连接字符串，要求右边的参数必须为字符串的切片引用（Slice）类型。其实当调用 `+` 的操作符时，相当于调用了 `std::string` 标准库中的 [`add()`](https://doc.rust-lang.org/std/string/struct.String.html#method.add) 方法，这里 `add()` 方法的第二个参数是一个引用的类型。因此我们在使用 `+`， 必须传递切片引用类型。不能直接传递 `String` 类型。**`+` 和 `+=` 都是返回一个新的字符串。所以变量声明可以不需要 `mut` 关键字修饰**。
+使用 `+` 或者 `+=` 连接字符串，要求右边的参数必须为字符串的切片引用（Slice）类型。其实当调用 `+` 的操作符时，相当于调用了 `std::string` 标准库中的 [`add()`](https://doc.rust-lang.org/std/string/struct.String.html#method.add) 方法，这里 `add()` 方法的第二个参数是一个引用的类型。因此我们在使用 `+` 时， 必须传递切片引用类型。不能直接传递 `String` 类型。**`+` 是返回一个新的字符串，所以变量声明可以不需要 `mut` 关键字修饰**。
 
 示例代码如下：
 
@@ -508,7 +508,7 @@ fn main() {
     let string_rust = String::from("rust");
     // &string_rust会自动解引用为&str
     let result = string_append + &string_rust;
-    let mut result = result + "!";
+    let mut result = result + "!"; // `result + "!"` 中的 `result` 是不可变的
     result += "!!!";
 
     println!("连接字符串 + -> {}", result);
@@ -600,6 +600,7 @@ fn main() {
     );
 
     // 换行了也会保持之前的字符串格式
+    // 使用\忽略换行符
     let long_string = "String literals
                         can span multiple lines.
                         The linebreak and indentation here ->\
@@ -682,7 +683,7 @@ for b in "中国人".bytes() {
 
 那么问题来了，为啥 `String` 可变，而字符串字面值 `str` 却不可以？
 
-就字符串字面值来说，我们在编译时就知道其内容，最终字面值文本被直接硬编码进可执行文件中，这使得字符串字面值快速且高效，这主要得益于字符串字面值的不可变性。不幸的是，我们不能为了获得这种性能，而把每一个在编译时大小未知的文本都放进内存中（你也做不到！），因为有的字符串是在程序运行得过程中动态生成的。
+就字符串字面值来说，我们在编译时就知道其内容，最终字面值文本被直接硬编码进可执行文件中，这使得字符串字面值快速且高效，这主要得益于字符串字面值的不可变性。不幸的是，我们不能为了获得这种性能，而把每一个在编译时大小未知的文本都放进内存中（你也做不到！），因为有的字符串是在程序运行的过程中动态生成的。
 
 对于 `String` 类型，为了支持一个可变、可增长的文本片段，需要在堆上分配一块在编译时未知大小的内存来存放内容，这些都是在程序运行时完成的：
 
@@ -712,11 +713,11 @@ for b in "中国人".bytes() {
 
 ## 课后练习
 > Rust By Practice，支持代码在线编辑和运行，并提供详细的习题解答。
-> - [字符串](https://zh.practice.rs/compound-types/string.html)
+> - [字符串](https://practice-zh.course.rs/compound-types/string.html)
 >     - [习题解答](https://github.com/sunface/rust-by-practice/blob/master/solutions/compound-types/string.md)
-> - [切片](https://zh.practice.rs/compound-types/slice.html)
+> - [切片](https://practice-zh.course.rs/compound-types/slice.html)
 >     - [习题解答](https://github.com/sunface/rust-by-practice/blob/master/solutions/compound-types/slice.md)
-> - [String](https://zh.practice.rs/collections/String.html)
+> - [String](https://practice-zh.course.rs/collections/String.html)
 >     - [习题解答](https://github.com/sunface/rust-by-practice/blob/master/solutions/collections/String.md)
 
 <hr />
